@@ -1,0 +1,20 @@
+llm:
+  cli: "codex"
+  args:
+    - "-m"
+    - "gpt-5.3-codex-spark"
+    - "-c"
+    - "model_reasoning_effort=high"
+    - "exec"
+    - "--ephemeral"
+    - "--sandbox"
+    - "danger-full-access"
+    - "--skip-git-repo-check"
+  mode: "stdin"
+  timeout_sec: 1800
+  min_call_interval_sec: 10.0
+
+mcts:
+  max_root_drafts: 1
+  max_debug_attempts: 4
+  max_improve_children: 1

@@ -1,0 +1,14 @@
+task_id: "demo_task"
+instruction: "Toy task: run runfile.py and print a fake metric."
+workdir: "./tasks/demo_task"
+budget:
+  wallclock_sec: 3600
+  per_run_timeout_sec: 120
+objective:
+  metric_name: "demo_metric"
+  higher_is_better: true
+execution:
+  entrypoint: "python runfile.py"
+  final_metric_regex: '^Final Validation Metric:\s*([0-9.eE+-]+)\s*$'
+repo_template:
+  path: "./templates/demo_repo_template"

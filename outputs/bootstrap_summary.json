@@ -1,0 +1,6 @@
+{
+  "status": "bootstrap",
+  "note": "Replace with actual training/evaluation pipeline in subsequent iterations.",
+  "metric_name": "micro_nll",
+  "metric_value": 9.999999
+}

@@ -1,0 +1,10 @@
+llm:
+  cli: "./bin/mock_llm.sh"
+  args: []
+  mode: "stdin"
+  timeout_sec: 1800
+
+mcts:
+  max_root_drafts: 1
+  max_debug_attempts: 2
+  max_improve_children: 1

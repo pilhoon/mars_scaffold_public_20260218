@@ -1,0 +1,59 @@
+# Global defaults (can be overridden per task.yaml)
+mcts:
+  c_uct: 1.4
+  w_time_penalty: -0.07
+  max_root_drafts: 1
+  root_reactivate_after_valid_no_improve: 5
+  max_debug_attempts: 10
+  max_improve_children: 2
+  identical_metric_streak_to_force_debug: 3
+
+memory:
+  keep_recent_k: 30
+
+llm:
+  # Default: equivalent to
+  # cat prompt.txt | codex -m gpt-5.3-codex-spark -c model_reasoning_effort=high exec --ephemeral --sandbox danger-full-access --skip-git-repo-check
+  cli: "codex"
+  args:
+    - "-m"
+    - "gpt-5.3-codex-spark"
+    - "-c"
+    - "model_reasoning_effort=high"
+    - "exec"
+    - "--ephemeral"
+    - "--sandbox"
+    - "danger-full-access"
+    - "--skip-git-repo-check"
+  # Multi-LLM failover list.
+  # Controller routes calls across profiles and skips profiles in usage-limit cooldown.
+  profiles:
+    - name: "gemini_backup"
+      cli: "gemini"
+      args: ["-m", "gemini-3-pro-preview", "-p", "-"]
+      mode: "stdin"  # executes as: cat prompt.txt | gemini -m gemini-3-pro-preview -p -
+    - name: "gemini_flash_backup"
+      cli: "gemini"
+      args: ["-m", "gemini-3-flash-preview", "-p", "-"]
+      mode: "stdin"  # executes as: cat prompt.txt | gemini -m gemini-3-flash-preview -p -
+    - name: "codex_primary"
+      cli: "codex"
+      args: ["-m", "gpt-5.3-codex-spark", "-c", "model_reasoning_effort=high", "exec", "--ephemeral", "--sandbox", "danger-full-access", "--skip-git-repo-check"]
+      mode: "stdin"
+    - name: "codex_backup"
+      cli: "codex"
+      args: ["-m", "gpt-5.3-codex", "-c", "model_reasoning_effort=high", "exec", "--ephemeral", "--sandbox", "danger-full-access", "--skip-git-repo-check"]
+      mode: "stdin"
+    - name: "claude_backup"
+      cli: "claude"
+      args: ["-p", "--no-session-persistence", "--dangerously-skip-permissions", "--verbose", "-"]
+      mode: "stdin"  # executes as: cat prompt.txt | claude -p --no-session-persistence --dangerously-skip-permissions --verbose -
+  profile_selection_mode: "round_robin"  # "sticky" or "round_robin" (runtime override key: llm_profile.selection_mode)
+  mode: "stdin"   # "argv" or "stdin"
+  timeout_sec: 1800
+  min_call_interval_sec: 10.0
+  auth_retry_backoff_sec: 60.0
+  usage_limit_wait_sec: 1800.0
+
+exec:
+  per_run_timeout_sec: 14400
